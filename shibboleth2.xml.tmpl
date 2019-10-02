@@ -1,0 +1,164 @@
+<SPConfig 
+    xmlns="urn:mace:shibboleth:3.0:native:sp:config"
+    xmlns:conf="urn:mace:shibboleth:3.0:native:sp:config"
+    xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+    xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui"
+    clockSkew="180">
+
+    <OutOfProcess tranLogFormat="%u|%s|%IDP|%i|%ac|%t|%attr|%n|%b|%E|%S|%SS|%L|%UA|%a" />
+
+    <ApplicationDefaults entityID="%%SHIBBOLETH_SP_ENTITY_ID%%"
+                         REMOTE_USER="eppn subject-id pairwise-id persistent-id"
+                         cipherSuites="DEFAULT:!EXP:!LOW:!aNULL:!eNULL:!DES:!IDEA:!SEED:!RC4:!3DES:!kRSA:!SSLv2:!SSLv3:!TLSv1:!TLSv1.1"
+                         >
+
+        <Sessions lifetime="28800" timeout="3600" relayState="ss:mem"
+                  checkAddress="false" handlerSSL="true" cookieProps="https" >
+
+           <SSO discoveryProtocol="SAMLDS"
+                discoveryURL="%%SHIBBOLETH_SP_SAMLDS_URL%%" > 
+             SAML2
+           </SSO>
+
+           <Logout>Local</Logout>
+
+           <LogoutInitiator type="Admin" Location="/Logout/Admin" acl="127.0.0.1 ::1" />
+
+            <Handler type="MetadataGenerator" Location="/Metadata" signing="false">
+               <!-- Requested Attributes for InCommon SPs -->
+               <md:AttributeConsumingService index="1"
+                   xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+                   xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">
+                 <md:ServiceName xml:lang="en">%%SP_MD_SERVICENAME%%</md:ServiceName>
+                 <md:ServiceDescription xml:lang="en">%%SP_MD_SERVICEDESCRIPTION%%</md:ServiceDescription>
+                 <!-- SAML V2.0 attribute syntax -->
+                 <md:RequestedAttribute isRequired="true"
+                     NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+                     Name="urn:oid:1.3.6.1.4.1.5923.1.1.1.6"
+                     FriendlyName="eduPersonPrincipalName"/>
+                 <md:RequestedAttribute
+                     NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+                     Name="urn:oid:2.16.840.1.113730.3.1.241"
+                     FriendlyName="displayName"/>
+               </md:AttributeConsumingService>
+
+               <!-- User Interface Elements for InCommon IdPs and SPs -->
+               <mdui:UIInfo xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui">
+                 <mdui:DisplayName xml:lang="en">%%SP_MDUI_DISPLAYNAME%%</mdui:DisplayName>
+                 <mdui:Description xml:lang="en">%%SP_MDUI_DESCRIPTION%%</mdui:Description>
+                 <mdui:InformationURL xml:lang="en">%%SP_MDUI_INFORMATIONURL%%</mdui:InformationURL>
+                 <mdui:PrivacyStatementURL xml:lang="en">%%SP_MDUI_PRIVACYSTATEMENTURL%%</mdui:PrivacyStatementURL>
+                 <mdui:Logo width="%%SP_MDUI_LOGO_WIDTH%%" height="%%SP_MDUI_LOGO_HEIGHT%%">%%SP_MDUI_LOGO_URL%%</mdui:Logo>
+               </mdui:UIInfo>
+
+               <md:Organization>
+                 <md:OrganizationName xml:lang="en">%%SP_MD_ORGANIZATION_NAME%%</md:OrganizationName>
+                 <md:OrganizationDisplayName xml:lang="en">%%SP_MD_ORGANIZATIONDISPLAYNAME%%</md:OrganizationDisplayName>
+                 <md:OrganizationURL xml:lang="en">%%SP_MD_ORGANIZATIONURL%%</md:OrganizationURL>
+               </md:Organization>
+
+               <md:ContactPerson contactType="technical"
+                    xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata">
+                 <md:GivenName>%%SP_MD_TECHNICAL_GIVENNAME%%</md:GivenName>
+                 <md:EmailAddress>mailto:%%SP_MD_TECHNICAL_EMAILADDRESS%%</md:EmailAddress>
+               </md:ContactPerson>
+               <md:ContactPerson contactType="administrative"
+                    xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata">
+                 <md:GivenName>%%SP_MD_ADMINISTRATIVE_GIVENNAME%%</md:GivenName>
+                 <md:EmailAddress>mailto:%%SP_MD_ADMINISTRATIVE_EMAILADDRESS%%</md:EmailAddress>
+               </md:ContactPerson>
+               <md:ContactPerson contactType="support"
+                    xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata">
+                 <md:GivenName>%%SP_MD_SUPPORT_GIVENNAME%%</md:GivenName>
+                 <md:EmailAddress>mailto:%%SP_MD_SUPPORT_EMAILADDRESS%%</md:EmailAddress>
+               </md:ContactPerson>
+               <md:ContactPerson contactType="other"
+                    xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+                    xmlns:remd="http://refeds.org/metadata"
+                    remd:contactType="http://refeds.org/metadata/contactType/security">
+                 <md:GivenName>%%SP_MD_SECURITY_GIVENNAME%%</md:GivenName>
+                 <md:EmailAddress>mailto:%%SP_MD_SECURITY_EMAILADDRESS%%</md:EmailAddress>
+               </md:ContactPerson>
+            </Handler>
+
+            <Handler type="Status" Location="/Status" acl="127.0.0.1 ::1"/>
+
+            <Handler type="Session" Location="/Session" showAttributeValues="true"/>
+
+            <Handler type="DiscoveryFeed" Location="/DiscoFeed"/>
+        </Sessions>
+
+        <Errors supportContact="root@localhost"
+            helpLocation="/about.html"
+            styleSheet="/shibboleth-sp/main.css"/>
+        
+        %%SHIBBOLETH_SP_METADATA_PROVIDER_XML%%
+
+        <!--
+          The following MetadataProvider attempts to refresh the InCommon
+          IdP-only metadata aggregate every hour.
+        -->
+        <MetadataProvider type="XML"
+            url="http://md.incommon.org/InCommon/InCommon-metadata-idp-only.xml"
+            backingFilePath="/var/log/shibboleth/InCommon-metadata-idp-only.xml"
+            maxRefreshDelay="3600">
+
+          <!--
+            To bootstrap the trust fabric of the federation, each relying party
+            obtains and configures an authentic copy of the federation operator’s
+            Metadata Signing Certificate (https://spaces.internet2.edu/x/moHFAg).
+
+            Fetch the InCommon Metadata Signing Certificate and check its integrity:
+
+            $ /usr/bin/curl -s https://ds.incommon.org/certs/inc-md-cert.pem \
+                | /usr/bin/tee inc-md-cert.pem \
+                | /usr/bin/openssl x509 -sha1 -fingerprint -noout
+            SHA1 Fingerprint=7D:B4:BB:28:D3:D5:C8:52:E0:80:B3:62:43:2A:AF:34:B2:A6:0E:DD
+
+            Verify the signature on the root element of the metadata aggregate
+            (i.e., the EntitiesDescriptor element) using the trusted Metadata
+            Signing Certificate.
+
+            A large metadata file can cause a significant increase in startup
+            time at the SP. This is due to the time it takes to verify the
+            signature on the metadata, which is known to increase exponentially
+            as the size of the metadata file increases. To disable signature
+            verification at startup time only, add verifyBackup="false" to the
+            MetadataFilter element below.
+          -->
+          <MetadataFilter type="Signature" certificate="/etc/shibboleth/inc-md-cert.pem"/>
+
+          <!--
+            Require a validUntil XML attribute on the EntitiesDescriptor element
+            and make sure its value is no more than 14 days into the future
+          -->
+          <MetadataFilter type="RequireValidUntil" maxValidityInterval="1209600"/>
+
+          <!--
+            Consume all IdP metadata in the aggregate. TIP: If the SP supports
+            SAML2 Web Browser SSO only, the md:AttributeAuthorityDescriptor
+            elements in IdP metadata can be ignored.
+          -->
+          <MetadataFilter type="EntityRoleWhiteList">
+            <RetainedRole>md:IDPSSODescriptor</RetainedRole>
+            <RetainedRole>md:AttributeAuthorityDescriptor</RetainedRole>
+          </MetadataFilter>
+
+        </MetadataProvider>
+
+        <AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml"/>
+
+        <AttributeFilter type="XML" validate="true" path="attribute-policy.xml"/>
+
+        <CredentialResolver type="File" use="signing"
+            key="sp-signing-key.pem" certificate="sp-signing-cert.pem"/>
+        <CredentialResolver type="File" use="encryption"
+            key="sp-encrypt-key.pem" certificate="sp-encrypt-cert.pem"/>
+
+    </ApplicationDefaults>
+    
+    <SecurityPolicyProvider type="XML" validate="true" path="security-policy.xml"/>
+
+    <ProtocolProvider type="XML" validate="true" reloadChanges="false" path="protocols.xml"/>
+
+</SPConfig>

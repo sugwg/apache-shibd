@@ -1,0 +1,21 @@
+version: '3'
+services:
+  scitokens-oauth2-server:
+    image: scitokens/oauth2-server
+    privileged: true
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - seccomp:unconfined
+    tmpfs:
+      - /run
+      - /run/lock
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - .:/usr/local/src/scitokens-oauth2-server
+    ports:
+      - "80:80"
+      - "443:443"
+      - "5000:5000"
+    hostname: seaview.phy.syr.edu
+    domainname: phy.syr.edu
