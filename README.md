@@ -37,5 +37,5 @@ docker build \
 
 Then start the container with
 ```sh
-docker run cosmicexplorer/roster
+docker run -p 443:443 cosmicexplorer/roster
 ```
