@@ -35,6 +35,8 @@ docker build \
    --rm -t sugwg/apache-shibd .
 ```
 
+The container requires the environment variables `HOSTNAME` and `DOMAINNAME` to be set to the host and domain that you want for the container.
+
 Then start the container with
 ```sh
 docker-compose up --detach
