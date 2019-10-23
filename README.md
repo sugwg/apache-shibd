@@ -30,7 +30,7 @@ Build the image setting the `--build-arg` to override the defaults as appropriat
 docker build \
    --build-arg SHIBBOLETH_SP_ENTITY_ID=http://ce-roster.phy.syr.edu/shibboleth-sp \
    --build-arg SP_MD_SERVICENAME="Syracuse University Gravitational Wave Group - CE COmanage" \
-   --build-arg SP_MDUI_DISPLAYNAME="Cosmic Explorer COmanage Roster" \
+   --build-arg SP_MD_SERVICEDESCRIPTION="Cosmic Explorer COmanage Roster" \
    --build-arg SP_MDUI_DISPLAYNAME="Syracuse University Gravitational Wave Group - CE COmanage" \
    --build-arg SP_MDUI_DESCRIPTION="Cosmic Explorer COmanage Roster" \
    --build-arg SP_MDUI_INFORMATIONURL="https://cosmicexplorer.org" \
