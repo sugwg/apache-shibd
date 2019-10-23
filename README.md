@@ -1,5 +1,7 @@
 # Docker Container for InCommon Federated Apache Server
 
+These instructions require both Docker and [Docker Compose](https://docs.docker.com/compose/install/) to be installed.
+
 First generate a key an certificate for Shibboleth to talk to the IdPs:
 ```sh
 pushd certificates
