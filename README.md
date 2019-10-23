@@ -32,10 +32,10 @@ docker build \
    --build-arg SP_MDUI_DISPLAYNAME="Syracuse University Gravitational Wave Group - CE COmanage" \
    --build-arg SP_MDUI_DESCRIPTION="Cosmic Explorer COmanage Roster" \
    --build-arg SP_MDUI_INFORMATIONURL="https://cosmicexplorer.org" \
-   --rm -t cosmicexplorer/roster .
+   --rm -t sugwg/apache-shibd .
 ```
 
 Then start the container with
 ```sh
-docker run -p 443:443 cosmicexplorer/roster
+docker-compose up --detach
 ```
