@@ -41,3 +41,8 @@ Then start the container with
 ```sh
 docker-compose up --detach
 ```
+
+You can log into the container with
+```sh
+docker exec -it apache-shibd_apache-shibd_1 /bin/bash -l
+```
