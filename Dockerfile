@@ -48,11 +48,7 @@ COPY ${SHIBBOLETH_SP_PRIVKEY} /etc/shibboleth/sp-signing-key.pem
 COPY ${SHIBBOLETH_SP_CERT} /etc/shibboleth/sp-encrypt-cert.pem
 COPY ${SHIBBOLETH_SP_PRIVKEY} /etc/shibboleth/sp-encrypt-key.pem
 
-RUN echo > /tmp/provider-metadata.sed '/%%SHIBBOLETH_SP_METADATA_PROVIDER_XML%%/ { r /tmp/provider-metadata.xml ' > /tmp/provider-metadata.sed && \
-    echo 'd }' >> /tmp/provider-metadata.sed && \
-    echo > /tmp/assertion-consumer-service.sed '/%%SP_MD_ASSERTION_CONSUMER_SERVICE%%/ { r /tmp/assertion-consumer-service.xml ' > /tmp/assertion-consumer-service.sed && \
-    echo 'd }' >> /tmp/assertion-consumer-service.sed && \
-    sed -e s+%%SHIBBOLETH_SP_ENTITY_ID%%+"${SHIBBOLETH_SP_ENTITY_ID}"+ /tmp/shibboleth2.xml.tmpl | \
+RUN sed -e s+%%SHIBBOLETH_SP_ENTITY_ID%%+"${SHIBBOLETH_SP_ENTITY_ID}"+ /tmp/shibboleth2.xml.tmpl | \
     sed -e s+%%SHIBBOLETH_SP_SAMLDS_URL%%+"${SHIBBOLETH_SP_SAMLDS_URL}"+ | \
     sed -e s+%%SP_MD_SERVICENAME%%+"${SP_MD_SERVICENAME}"+ | \
     sed -e s+%%SP_MD_SERVICEDESCRIPTION%%+"${SP_MD_SERVICEDESCRIPTION}"+ | \
@@ -74,8 +70,8 @@ RUN echo > /tmp/provider-metadata.sed '/%%SHIBBOLETH_SP_METADATA_PROVIDER_XML%%/
     sed -e s+%%SP_MD_SUPPORT_EMAILADDRESS%%+"${SP_MD_SUPPORT_EMAILADDRESS}"+ | \
     sed -e s+%%SP_MD_SECURITY_GIVENNAME%%+"${SP_MD_SECURITY_GIVENNAME}"+ | \
     sed -e s+%%SP_MD_SECURITY_EMAILADDRESS%%+"${SP_MD_SECURITY_EMAILADDRESS}"+ | \
-    sed -f /tmp/provider-metadata.sed | \
-    sed -f /tmp/assertion-consumer-service.sed > /etc/shibboleth/shibboleth2.xml && \
+    sed -e '/%%SHIBBOLETH_SP_METADATA_PROVIDER_XML%%/ {' -e 'r /tmp/provider-metadata.xml' -e 'd' -e '}' | \
+    sed -e '/%%SP_MD_ASSERTION_CONSUMER_SERVICE%%/ {' -e 'r /tmp/assertion-consumer-service.xml' -e 'd' -e '}' > /etc/shibboleth/shibboleth2.xml && \
     curl -L -s https://ds.incommon.org/certs/inc-md-cert.pem > /etc/shibboleth/inc-md-cert.pem && \
     chown shibd:shibd /etc/shibboleth/sp*pem
 
