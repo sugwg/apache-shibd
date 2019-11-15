@@ -1,6 +1,7 @@
 FROM centos:7
 ENV container docker
 
+RUN yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 RUN curl -s -L http://download.opensuse.org/repositories/security://shibboleth/CentOS_7/security:shibboleth.repo > /etc/yum.repos.d/shibboleth.repo
 RUN yum -y install yum-plugin-ovl supervisor install httpd mod_ssl shibboleth shibboleth-embedded-ds mod_shib
 
