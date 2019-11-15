@@ -20,14 +20,18 @@ certificates/hostcert.pem
 certificates/hostkey.pem
 ```
 
-If you have any additional IdP providers other than those than come through InCommon Federation, create the file `provider-metadata.xml` and add them to this file. The contents of this file are added inside the `<SPConfig>`, so they should just contain the `<MetadataProvider>` section for the additional IdPs. For example, a valid `provider-metdadata.xml` can contain one or more IdPs in the format:
-```
+If you have any additional IdP providers other than those than come through InCommon Federation, add them to the file `provider-metadata.xml`. The contents of this file are added inside the `<SPConfig>`, so they should just contain the `<MetadataProvider>` section for the additional IdPs. For example, a valid `provider-metdadata.xml` can contain one or more IdPs in the format:
+```xml
 <MetadataProvider type="XML" url="https://sugwg-ds.phy.syr.edu/sugwg-orcid-metadata.xml"
     backingFilePath="/var/log/shibboleth/sugwg-orcid-metadata.xml" reloadInterval="82800" legacyOrgNames="true"/>
 ```
-If no additionan IdPs are needed beyone the InCommon federation, create an empty file with
-```sh
-touch provider-metadata.xml
+
+If the service provider will be host a services at a different URL than the hostname of the container, then you will need edit the file `assertion-consumer-service.xml` and add additional SAML end points to the metadata. For example, if the machine `ce-dcc.phy.syr.edu` also hosts an end point at `dcc.cosmicexplorer.org`, you will need to add the following lines to `assertion-consumer-service.xml`:
+```xml
+    <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://dcc.cosmicexplorer.org/Shibboleth.sso/SAML2/POST" index="5"/>
+    <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://dcc.cosmicexplorer.org/Shibboleth.sso/SAML2/POST-SimpleSign" index="6"/>
+    <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact" Location="https://dcc.cosmicexplorer.org/Shibboleth.sso/SAML2/Artifact" index="7"/>
+    <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:PAOS" Location="https://dcc.cosmicexplorer.org/Shibboleth.sso/SAML2/ECP" index="8"/>
 ```
 
 Build the image setting the `--build-arg` to override the defaults as appropriate, for example:
