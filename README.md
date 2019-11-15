@@ -28,8 +28,8 @@ If you have any additional IdP providers other than those than come through InCo
 
 If the service provider will serve more than one hostname, then you will need to edit the file `assertion-consumer-service.xml` and add additional `<EndpointBase>` for each hostname that the SP will serve. For example, if the host `ce-dcc.phy.syr.edu` also serves `dcc.cosmicexplorer.org` add the lines:
 ```xml
-                <EndpointBase>https://dcc.cosmicexplorer.org/Shibboleth.sso</EndpointBase>
-                <EndpointBase>https://ce-dcc.phy.syr.edu/Shibboleth.sso</EndpointBase>
+<EndpointBase>https://dcc.cosmicexplorer.org/Shibboleth.sso</EndpointBase>
+<EndpointBase>https://ce-dcc.phy.syr.edu/Shibboleth.sso</EndpointBase>
 ```
 to `assertion-consumer-service.xml`.
 
