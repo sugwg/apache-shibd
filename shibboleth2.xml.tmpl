@@ -25,7 +25,6 @@
            <LogoutInitiator type="Admin" Location="/Logout/Admin" acl="127.0.0.1 ::1" />
 
             <Handler type="MetadataGenerator" Location="/Metadata" signing="false">
-               <!-- Additional AssertionConsumerService URLs -->
                %%SP_MD_ASSERTION_CONSUMER_SERVICE%%
                <!-- Requested Attributes for InCommon SPs -->
                <md:AttributeConsumingService index="1"
