@@ -2,6 +2,10 @@
 
 set -e
 
+for file in attribute-map.xml inc-md-cert.pem sp-encrypt-cert.pem sp-encrypt-key.pem shibboleth2.xml
+  do cp -v /etc/shibboleth/${file} /mnt
+done
+
 if [ ! -d /run/shibboleth ] ; then
   mkdir -p /run/shibboleth
 fi
