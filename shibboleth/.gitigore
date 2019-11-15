@@ -1,0 +1,5 @@
+attribute-map.xml
+inc-md-cert.pem
+sp-encrypt-cert.pem
+sp-encrypt-key.pem
+shibboleth2.xml
