@@ -3,7 +3,7 @@ services:
   apache-shibd:
     image: sugwg/apache-shibd
     volumes:
-      - /etc/shibboleth:/mnt
+      - ${PWD}/shibboleth:/mnt
     ports:
       - "443:443"
     hostname: ${HOSTNAME}
