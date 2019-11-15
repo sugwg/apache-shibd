@@ -40,7 +40,6 @@ ARG SP_MD_SUPPORT_EMAILADDRESS="kjfallon@syr.edu"
 ARG SP_MD_SECURITY_GIVENNAME="Christopher Croad"
 ARG SP_MD_SECURITY_EMAILADDRESS="ccroad@syr.edu"
 
-
 COPY shibboleth2.xml.tmpl /tmp/shibboleth2.xml.tmpl
 COPY ${SHIBBOLETH_SP_METADATA_PROVIDER_XML} /tmp/provider-metadata.xml
 COPY ${SP_MD_ASSERTION_CONSUMER_SERVICE} /tmp/assertion-consumer-service.xml
