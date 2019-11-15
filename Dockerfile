@@ -1,27 +1,15 @@
 FROM centos:7
 ENV container docker
-RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
-systemd-tmpfiles-setup.service ] || rm -f $i; done); \
-rm -f /lib/systemd/system/multi-user.target.wants/*;\
-rm -f /etc/systemd/system/*.wants/*;\
-rm -f /lib/systemd/system/local-fs.target.wants/*; \
-rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
-rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
-rm -f /lib/systemd/system/basic.target.wants/*;\
-rm -f /lib/systemd/system/anaconda.target.wants/*;
-VOLUME [ "/sys/fs/cgroup" ]
 
 RUN curl -s -L http://download.opensuse.org/repositories/security://shibboleth/CentOS_7/security:shibboleth.repo > /etc/yum.repos.d/shibboleth.repo
-RUN yum -y install httpd mod_ssl shibboleth shibboleth-embedded-ds mod_shib
+RUN yum -y install yum-plugin-ovl supervisor install httpd mod_ssl shibboleth shibboleth-embedded-ds mod_shib
 
 COPY certificates/hostkey.pem /etc/pki/tls/private/localhost.key
 COPY certificates/hostcert.pem /etc/pki/tls/certs/localhost.crt
 COPY certificates/igtf-ca-bundle.crt /etc/pki/tls/certs/server-chain.crt
 RUN mv /etc/httpd/conf.d/ssl.conf /etc/httpd/conf.d/ssl.conf.orig && \
     sed 's/#SSLCertificateChainFile/SSLCertificateChainFile/g' /etc/httpd/conf.d/ssl.conf.orig > /etc/httpd/conf.d/ssl.conf && \
-    rm -f /etc/httpd/conf.d/ssl.conf.orig && \
-    systemctl enable httpd && \
-    systemctl enable shibd
+    rm -f /etc/httpd/conf.d/ssl.conf.orig
 
 ARG SHIBBOLETH_SP_ENTITY_ID=https://seaview.phy.syr.edu/shibboleth-sp
 ARG SHIBBOLETH_SP_CERT=certificates/sp-cert.pem
@@ -86,4 +74,8 @@ RUN echo > /tmp/provider-metadata.sed '/%%SHIBBOLETH_SP_METADATA_PROVIDER_XML%%/
     curl -L -s https://ds.incommon.org/certs/inc-md-cert.pem > /etc/shibboleth/inc-md-cert.pem && \
     chown shibd:shibd /etc/shibboleth/sp*pem
 
-CMD ["/usr/sbin/init"]
+COPY supervisord.conf /usr/local/etc/supervisord.conf
+COPY start-shibd.sh /usr/local/sbin/start-shibd.sh
+COPY start-apache.sh /usr/local/sbin/start-apache.sh
+
+ENTRYPOINT ["/usr/bin/supervisord", "-c", "/usr/local/etc/supervisord.conf"]

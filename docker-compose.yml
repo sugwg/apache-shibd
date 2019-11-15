@@ -2,16 +2,7 @@ version: '3'
 services:
   apache-shibd:
     image: sugwg/apache-shibd
-    privileged: true
-    cap_add:
-      - SYS_ADMIN
-    security_opt:
-      - seccomp:unconfined
-    tmpfs:
-      - /run
-      - /run/lock
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /etc/shibboleth:/mnt
     ports:
       - "443:443"
