@@ -12,7 +12,7 @@ services:
       - /run/lock
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-      - .:/usr/local/src/scitokens-oauth2-server
+      - /etc/shibboleth:/mnt
     ports:
       - "443:443"
     hostname: ${HOSTNAME}
