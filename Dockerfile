@@ -52,7 +52,7 @@ COPY ${SHIBBOLETH_SP_PRIVKEY} /etc/shibboleth/sp-encrypt-key.pem
 RUN echo > /tmp/provider-metadata.sed '/%%SHIBBOLETH_SP_METADATA_PROVIDER_XML%%/ { r /tmp/provider-metadata.xml ' > /tmp/provider-metadata.sed && \
     echo 'd }' >> /tmp/provider-metadata.sed && \
     echo > /tmp/assertion-consumer-service.sed '/%%SP_MD_ASSERTION_CONSUMER_SERVICE%%/ { r /tmp/assertion-consumer-service.xml ' > /tmp/assertion-consumer-service.sed && \
-    echo 'd }' >> /tmp/assertion-consumer-service && \
+    echo 'd }' >> /tmp/assertion-consumer-service.sed && \
     sed -e s+%%SHIBBOLETH_SP_ENTITY_ID%%+"${SHIBBOLETH_SP_ENTITY_ID}"+ /tmp/shibboleth2.xml.tmpl | \
     sed -e s+%%SHIBBOLETH_SP_SAMLDS_URL%%+"${SHIBBOLETH_SP_SAMLDS_URL}"+ | \
     sed -e s+%%SP_MD_SERVICENAME%%+"${SP_MD_SERVICENAME}"+ | \
