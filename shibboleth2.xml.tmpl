@@ -5,7 +5,11 @@
     xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui"
     clockSkew="180">
 
-    <OutOfProcess tranLogFormat="%u|%s|%IDP|%i|%ac|%t|%attr|%n|%b|%E|%S|%SS|%L|%UA|%a" />
+    <OutOfProcess tranLogFormat="%u|%s|%IDP|%i|%ac|%t|%attr|%n|%b|%E|%S|%SS|%L|%UA|%a">
+        <Extensions>
+            <Library path="plugins.so" fatal="true"/>
+        </Extensions>
+    </OutOfProcess>
 
     <ApplicationDefaults entityID="%%SHIBBOLETH_SP_ENTITY_ID%%"
                          REMOTE_USER="eduPersonPrincipalName eppn subject-id pairwise-id persistent-id"
