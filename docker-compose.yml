@@ -5,6 +5,6 @@ services:
     volumes:
       - ${PWD}/shibboleth:/mnt
     ports:
-      - "443:443"
+      - "${HOSTIP}:443:443"
     hostname: ${HOSTNAME}
     domainname: ${DOMAINNAME}

@@ -62,9 +62,11 @@ The container requires the environment variables `HOSTNAME` and `DOMAINNAME` to 
 
 Then start the container with
 ```sh
+export HOSTIP=128.230.146.17
 export DOMAINNAME=phy.syr.edu
 docker-compose up --detach
 ```
+where `HOSTIP` is the IP address of the NIC that you want to use.
 
 You can log into the container with
 ```sh
